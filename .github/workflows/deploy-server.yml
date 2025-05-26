@@ -2,11 +2,11 @@ name: Deploy Node App (server)
 
 on:
   push:
-    branches: [main]  # Or your deployment branch
+    branches: [main]  # or your deployment branch
 
 jobs:
   build-and-deploy:
-    runs-on: windows
+    runs-on: windows-latest
 
     steps:
       - name: Checkout code
@@ -15,20 +15,21 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 20
+          node-version: '20.x'
+          
 
       - name: Install dependencies
         run: npm install
-        working-directory: server
+        working-directory: ./server
 
       - name: Optional: Build step (if needed)
         run: npm run build
         working-directory: server
-        continue-on-error: true
+        continue-on-error: true  # if build isn't required
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v2
         with:
-          app-name: PlantHealthApi  # ✅ Your Azure Web App name
+          app-name: YOUR_AZURE_APP_NAME
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
           package: ./server
